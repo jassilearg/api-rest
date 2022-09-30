@@ -12,7 +12,7 @@ const login = async (req, res) => {
     try {
         const { rowCount, rows } = await query('select * from users where email = $1', [email]);
 
-        if (rowCount > 0) {
+        if (rowCount <= 0) {
             return res.status(400).json({ message: "E-mail ou senha estão incorretos." });
         }
 
@@ -24,18 +24,18 @@ const login = async (req, res) => {
             return res.status(400).json({ message: "E-mail ou senha estão incorretos." });          
         }
 
-        const token = jwt.sign({ id: user.id }, 'securePasswordForToken' ,{ expiresIn: '8h' });
+        const token = jwt.sign({ id: user.id }, 'securePasswordForToken', { expiresIn: '8h' });
 
         const { password: _, ...dataUser } = user;
 
         return res.status(200).json({
             user: dataUser,
-            token: token
+            token
         })
 
 
     } catch (error) {
-        return res.status(500).json({ message:` Erro interno: ${error.message}` });
+        return res.status(500).json({ message: `Erro interno: ${error.message}` });
     }
 }
 

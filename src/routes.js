@@ -5,7 +5,7 @@ const { registerUser } = require('./controllers/user');
 const routes = express();
 
 routes.post('/user', registerUser);
-routes.post('login', login)
+routes.post('/login', login)
 
 module.exports = {
     routes
