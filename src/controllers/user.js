@@ -37,6 +37,12 @@ const registerUser = async (req, res) => {
     }
 }
 
+const getUserProfile = async (req, res) => {
+    
+    return res.json(req.user); // Não precisa de status 200 porque já é padrão
+}
+
 module.exports = {
-    registerUser
-};
+    registerUser,
+    getUserProfile
+}
