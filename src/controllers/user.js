@@ -18,19 +18,21 @@ const registerUser = async (req, res) => {
         const encryptedPassword = await bcrypt.hash(password, 10);
 
         const registerQuery = 'insert into users (name, email, password) values ($1, $2, $3) returning *';
-        const registerParam = [name, email, password];
+        const registerParam = [name, email, encryptedPassword];
         const registeredUser = await query(registerQuery, registerParam);
 
-        if (registeredUser <= 0) {
+        if (registeredUser.rowCount <= 0) {
+            console.log("ENTROU AQUI - RegistredUser")
             return res.status(500).json({ message:` Erro interno: ${error.message}` });
         }
 
-        const { password: _, ...register } = registerUser.rows[0]; 
+        const { password: _, ...register } = registeredUser.rows[0]; 
 
         return res.status(201).json(register);
 
 
     } catch (error) {
+        console.log("Entrou no catch")
         return res.status(500).json({ message:` Erro interno: ${error.message}` });
     }
 }
