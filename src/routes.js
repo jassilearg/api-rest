@@ -12,6 +12,4 @@ routes.use(authenticationFilter); // Rotas abaixo dessa linha passam pelo filtro
 
 routes.get('/user', getUserProfile);
 
-module.exports = {
-    routes
-}
+module.exports = routes;
