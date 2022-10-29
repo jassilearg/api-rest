@@ -1,10 +1,11 @@
 const { query } = require('../database/conection');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const cache = require('../cache');
 
 const login = async (req, res) => {
     const { email, password } = req.body;
-    console.log(password)
+    // console.log(password)
 
     if (!email || !password) {
         return res.status(400).json({ message: "E-mail e senha são obrigatórios." });
@@ -30,7 +31,25 @@ const login = async (req, res) => {
 
         const token = jwt.sign({ id: user.id }, 'securePasswordForToken', { expiresIn: '6h' });
 
-        const { password: _, ...dataUser} = user;
+
+        /////////    buscando a informações da cache para retorná-las    ////////
+
+        const cached = await cache.get(user.id)
+
+        if (cache) {
+            return cached;
+        }
+
+        /////////    buscando a informações da cache para retorná-las    ////////
+
+
+        const { password: _, ...dataUser } = user;
+
+        /////////    passando os parâmetros do set cache     ////////
+
+        cache.set(rows, dataUser, 60 * 15); // definido tempo de 15 minutos
+
+        /////////     passando os parâmetros do set cache     ////////
 
         return res.status(200).json({
             user: dataUser,
